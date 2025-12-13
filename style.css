@@ -1,56 +1,35 @@
-.choice{
-  display: block;
-  width: 100%;
+/* 1) 全站深色背景（保底，不吃變數也能深色） */
+html, body{
+  background:#0f1115;
+  color:#e6e6e6;
+}
 
-  /* 外觀：更像按鈕卡片 */
-  padding: 16px 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--btn) 0%, #0f1522 100%);
-  color: var(--text);
+/* 2) 卡片本身置中，並把內容改成置中排版 */
+.card{
+  margin: 16px auto;
+  text-align: center;         /* 文字置中 */
+}
 
-  /* 文字：像上一版大按鈕 */
+/* 3) 讓上方狀態文字也置中 */
+#status, #progress, #score, #mode{
   text-align: center;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: .2px;
-
-  /* 手感 */
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation; /* 讓觸控點擊更乾脆（避免一些手勢等待） */ /* [web:490] */
-  box-shadow: 0 6px 18px rgba(0,0,0,.35);
-  transition: transform .06s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
-.choice:hover{
-  background: linear-gradient(180deg, var(--btnHover) 0%, #121b2b 100%);
-  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+/* 4) 題目置中 */
+#prompt{
+  text-align: center;
 }
 
-.choice:active{
-  transform: translateY(1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+/* 5) 選項按鈕區塊置中 */
+.choices{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  justify-items: center;      /* 讓每個按鈕在格子裡置中 */
 }
 
-.choice:disabled{
-  opacity: .85;
-  cursor: default;
-}
-
-/* 鍵盤操作的焦點框（建議保留，避免把 outline 直接關掉） */
-.choice:focus-visible{
-  outline: 3px solid rgba(56, 189, 248, .8);
-  outline-offset: 2px;
-} /* [web:483] */
-
-/* 答對/答錯更明顯：改邊框 + 內陰影 */
-.choice.correct{
-  border-color: var(--ok);
-  box-shadow: 0 0 0 2px rgba(46,204,113,.25) inset, 0 8px 20px rgba(0,0,0,.35);
-}
-
-.choice.wrong{
-  border-color: var(--bad);
-  box-shadow: 0 0 0 2px rgba(231,76,60,.25) inset, 0 8px 20px rgba(0,0,0,.35);
+/* 6) 按鈕本身置中＋固定最大寬度，手機也好看 */
+.choice{
+  width: min(520px, 100%);
+  text-align: center;
 }
