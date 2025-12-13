@@ -1,18 +1,22 @@
-/* 1) 全站深色背景（保底，不吃變數也能深色） */
+/* 1) 全站灰底（柔和） */
 html, body{
-  background:#0f1115;
-  color:#e6e6e6;
+  background:#eceff3;
+  color:#1f2937;
 }
 
-/* 2) 卡片本身置中，並把內容改成置中排版 */
+/* 2) 卡片置中 + 灰底上做一張更亮的卡片 */
 .card{
   margin: 16px auto;
-  text-align: center;         /* 文字置中 */
+  text-align: center;
+  background: #f7f8fa;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
-/* 3) 讓上方狀態文字也置中 */
+/* 3) 上方狀態文字置中（順便降一點對比） */
 #status, #progress, #score, #mode{
   text-align: center;
+  color: #4b5563;
 }
 
 /* 4) 題目置中 */
@@ -20,16 +24,27 @@ html, body{
   text-align: center;
 }
 
-/* 5) 選項按鈕區塊置中 */
+/* 5) 選項區塊置中 */
 .choices{
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  justify-items: center;      /* 讓每個按鈕在格子裡置中 */
+  justify-items: center;
 }
 
-/* 6) 按鈕本身置中＋固定最大寬度，手機也好看 */
+/* 6) 按鈕置中 + 變成淺色按鈕（灰底版） */
 .choice{
   width: min(520px, 100%);
   text-align: center;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
 }
+
+.choice:hover{
+  background: #f3f4f6;
+}
+
+/* 答對/答錯（保留你原本變數也行，這裡用更適合淺底的顏色） */
+.choice.correct{ border-color: #16a34a; }
+.choice.wrong{ border-color: #dc2626; }
