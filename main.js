@@ -164,7 +164,7 @@ function choose(idx) {
   updateHUD();
 
   // 自動跳下一題
-  setTimeout(() => nextQuestion(), 700);
+  setTimeout(() => nextQuestion(), 2000);
 }
 
 (async function init() {
