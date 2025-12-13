@@ -1,10 +1,13 @@
-body { font-family: system-ui, "Noto Sans TC", sans-serif; background:#111; color:#eee; margin:0; }
-.card { max-width: 520px; margin: 40px auto; padding: 24px; background:#1b1b1b; border-radius: 12px; }
-.choices { display:grid; grid-template-columns: 1fr; gap:10px; margin: 16px 0; }
-.choice { padding: 12px; border-radius: 10px; border: 1px solid #444; background:#222; color:#eee; cursor:pointer; text-align:left; }
-.choice.correct { border-color: #2ecc71; }
-.choice.wrong { border-color: #e74c3c; }
-.feedback { min-height: 24px; margin: 12px 0; }
-button#nextBtn { padding: 10px 14px; border-radius: 10px; }
-.choice.correct { border-color: #2ecc71; }
-.choice.wrong { border-color: #e74c3c; }
+/* 基本：讓內容不要貼邊、字體好讀、按鈕好按 */
+body { margin:0; font-family: system-ui, "Noto Sans TC", sans-serif; }
+.card { max-width: 520px; margin: 16px auto; padding: 16px; }
+.choices { display: grid; gap: 10px; }
+.choice { width: 100%; padding: 14px 12px; font-size: 18px; border-radius: 12px; }
+
+/* 手機小螢幕再微調 */
+@media (max-width: 480px) {
+  .card { margin: 0; border-radius: 0; min-height: 100vh; }
+  h1 { font-size: 22px; }
+  #prompt { font-size: 24px; }
+  .choice { font-size: 18px; padding: 16px 12px; }
+}
