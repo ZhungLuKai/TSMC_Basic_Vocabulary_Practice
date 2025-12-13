@@ -1,50 +1,29 @@
-/* 1) 全站灰底（柔和） */
-html, body{
-  background:#eceff3;
-  color:#1f2937;
+/* 全站基礎字體放大（含狀態文字） */
+body{
+  font-size: 18px;
+  line-height: 1.65;
 }
 
-/* 2) 卡片置中 + 灰底上做一張更亮的卡片 */
-.card{
-  margin: 16px auto;
-  text-align: center;
-  background: #f7f8fa;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
-}
-
-/* 3) 上方狀態文字置中（順便降一點對比） */
-#status, #progress, #score, #mode{
-  text-align: center;
-  color: #4b5563;
-}
-
-/* 4) 題目置中 */
+/* 題目字更大 */
 #prompt{
-  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
 }
 
-/* 5) 選項區塊置中 */
-.choices{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  justify-items: center;
+/* 狀態區（題庫載入、進度、模式） */
+#status, #progress, #score, #mode{
+  font-size: 16px;
 }
 
-/* 6) 按鈕置中 + 變成淺色按鈕（灰底版） */
+/* 答案按鈕字更大 */
 .choice{
-  width: min(520px, 100%);
-  text-align: center;
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #d1d5db;
+  font-size: 22px;
 }
 
-.choice:hover{
-  background: #f3f4f6;
+/* 手機再加大一點 */
+@media (max-width: 480px){
+  body{ font-size: 20px; }
+  #prompt{ font-size: 36px; }
+  #status, #progress, #score, #mode{ font-size: 18px; }
+  .choice{ font-size: 24px; }
 }
-
-/* 答對/答錯（保留你原本變數也行，這裡用更適合淺底的顏色） */
-.choice.correct{ border-color: #16a34a; }
-.choice.wrong{ border-color: #dc2626; }
