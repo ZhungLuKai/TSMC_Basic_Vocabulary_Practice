@@ -1,36 +1,40 @@
-let bank = [];          // [{word, meaning}]
-let current = null;     // {word, meaning, options: [meaning...], correctIndex}
-let locked = false;
+let bank = [];     // [{word, meaning}]
+let order = [];    // shuffled indices
+let pos = 0;       // next question pointer
+let answered = 0;
+let correctCount = 0;
+
+let current = null;  // {prompt, options, correctIndex, correctText}
 
 const statusEl = document.querySelector("#status");
-const wordEl = document.querySelector("#word");
+const progressEl = document.querySelector("#progress");
+const scoreEl = document.querySelector("#score");
+const modeEl = document.querySelector("#mode");
+const promptEl = document.querySelector("#prompt");
 const choicesEl = document.querySelector("#choices");
 const feedbackEl = document.querySelector("#feedback");
-const nextBtn = document.querySelector("#nextBtn");
 
-// 讀取 CSV：放在同層 words.csv，GitHub Pages/Live Server 都可用 fetch 讀。[web:313]
 async function loadCSV(path) {
   const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
   return parseSimpleCSV(text);
 }
 
-// 非嚴格 CSV 解析：適合「兩欄、且 meaning 不含逗號」的情況
+// 適合兩欄 CSV：word,meaning（meaning 盡量不要含逗號；若含逗號會被 join 回來）
 function parseSimpleCSV(text) {
   const lines = text.split(/\r?\n/).filter(Boolean);
   if (lines.length <= 1) return [];
 
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i];
-    const parts = line.split(",");
+    const parts = lines[i].split(",");
     if (parts.length < 2) continue;
 
-    // 處理 UTF-8 BOM（有些 Excel 匯出會在第一欄前面塞 \ufeff）
     const word = parts[0].replace(/^\uFEFF/, "").trim();
-    const meaning = parts.slice(1).join(",").trim(); // 保底：如果後面多逗號就併回去
-    if (!word || !meaning) continue;
+    const meaning = parts.slice(1).join(",").trim();
 
+    if (!word || !meaning) continue;
     rows.push({ word, meaning });
   }
   return rows;
@@ -40,16 +44,7 @@ function randInt(n) {
   return Math.floor(Math.random() * n);
 }
 
-function pickUniqueIndices(n, k, bannedSet = new Set()) {
-  const result = new Set();
-  while (result.size < k) {
-    const idx = randInt(n);
-    if (bannedSet.has(idx)) continue;
-    result.add(idx);
-  }
-  return [...result];
-}
-
+// Fisher–Yates shuffle（in-place）
 function shuffleInPlace(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = randInt(i + 1);
@@ -57,42 +52,72 @@ function shuffleInPlace(arr) {
   }
 }
 
-function makeQuestion() {
-  if (bank.length < 4) {
-    throw new Error("題庫至少需要 4 筆，才能做四選一。");
+function pickWrongIndices(total, k, bannedIndex) {
+  const result = new Set();
+  while (result.size < k) {
+    const idx = randInt(total);
+    if (idx === bannedIndex) continue;
+    result.add(idx);
   }
+  return [...result];
+}
 
-  const correctIdx = randInt(bank.length);
-  const correct = bank[correctIdx];
+function updateHUD() {
+  const total = bank.length;
+  const currentNo = Math.min(pos + 1, total); // 即將要顯示的題號（當 pos > total 時仍顯示 total）
+  progressEl.textContent = `第 ${Math.min(pos, total)} / ${total} 題（已作答：${answered}）`;
+  scoreEl.textContent = `答對：${correctCount} / ${answered}`;
+  if (answered === 0) scoreEl.textContent = `答對：0 / 0`;
+}
 
-  const wrongIndices = pickUniqueIndices(
-    bank.length,
-    3,
-    new Set([correctIdx])
-  );
-  const options = [
-    correct.meaning,
-    bank[wrongIndices[0]].meaning,
-    bank[wrongIndices[1]].meaning,
-    bank[wrongIndices[2]].meaning,
-  ];
-  shuffleInPlace(options);
+function makeQuestion(index) {
+  const item = bank[index];
 
-  return {
-    word: correct.word,
-    meaning: correct.meaning,
-    options,
-    correctIndex: options.indexOf(correct.meaning),
-  };
+  const direction = Math.random() < 0.5 ? "EN_TO_ZH" : "ZH_TO_EN";
+  const wrong = pickWrongIndices(bank.length, 3, index);
+
+  if (direction === "EN_TO_ZH") {
+    // 題目：英文；選項：中文
+    modeEl.textContent = "模式：英翻中";
+    const options = [
+      item.meaning,
+      bank[wrong[0]].meaning,
+      bank[wrong[1]].meaning,
+      bank[wrong[2]].meaning,
+    ];
+    shuffleInPlace(options);
+
+    return {
+      prompt: item.word,
+      options,
+      correctIndex: options.indexOf(item.meaning),
+      correctText: item.meaning,
+    };
+  } else {
+    // 題目：中文；選項：英文
+    modeEl.textContent = "模式：中翻英";
+    const options = [
+      item.word,
+      bank[wrong[0]].word,
+      bank[wrong[1]].word,
+      bank[wrong[2]].word,
+    ];
+    shuffleInPlace(options);
+
+    return {
+      prompt: item.meaning,
+      options,
+      correctIndex: options.indexOf(item.word),
+      correctText: item.word,
+    };
+  }
 }
 
 function renderQuestion(q) {
   current = q;
-  locked = false;
-  nextBtn.disabled = true;
   feedbackEl.textContent = "";
-  wordEl.textContent = q.word;
   choicesEl.innerHTML = "";
+  promptEl.textContent = q.prompt;
 
   q.options.forEach((text, idx) => {
     const btn = document.createElement("button");
@@ -101,36 +126,61 @@ function renderQuestion(q) {
     btn.addEventListener("click", () => choose(idx));
     choicesEl.appendChild(btn);
   });
+
+  updateHUD();
+}
+
+function nextQuestion() {
+  if (pos >= order.length) {
+    promptEl.textContent = "測驗完成";
+    feedbackEl.textContent = `總共 ${answered} 題，答對 ${correctCount} 題。`;
+    choicesEl.innerHTML = "";
+    updateHUD();
+    return;
+  }
+
+  const qIndex = order[pos];
+  pos += 1;
+  renderQuestion(makeQuestion(qIndex));
 }
 
 function choose(idx) {
-  if (locked) return;
-  locked = true;
-
   const buttons = [...document.querySelectorAll(".choice")];
   buttons.forEach(b => (b.disabled = true));
 
+  answered += 1;
+
   const isCorrect = idx === current.correctIndex;
-  feedbackEl.textContent = isCorrect ? "答對" : `答錯（正確：${current.meaning}）`;
+  if (isCorrect) correctCount += 1;
 
-  // 標示正確/錯誤按鈕（可選）
-  buttons[current.correctIndex].classList.add("correct");
-  if (!isCorrect) buttons[idx].classList.add("wrong");
+  feedbackEl.textContent = isCorrect
+    ? "答對"
+    : `答錯（正確：${current.correctText}）`;
 
-  nextBtn.disabled = false;
+  // 標示正確/錯誤（可有可無）
+  buttons[current.correctIndex]?.classList.add("correct");
+  if (!isCorrect) buttons[idx]?.classList.add("wrong");
+
+  updateHUD();
+
+  // 自動跳下一題
+  setTimeout(() => nextQuestion(), 700);
 }
-
-nextBtn.addEventListener("click", () => {
-  renderQuestion(makeQuestion());
-});
 
 (async function init() {
   try {
-    // 注意：請用 Live Server / GitHub Pages 開，不要直接雙擊用 file:// 開，
-    // 因為瀏覽器的同源策略/安全限制可能會擋掉讀取。[web:314]
     bank = await loadCSV("words.csv");
+    if (bank.length < 4) throw new Error("題庫至少需要 4 筆，才能四選一。");
+
     statusEl.textContent = `題庫載入完成：${bank.length} 筆`;
-    renderQuestion(makeQuestion());
+
+    order = [...Array(bank.length).keys()];
+    shuffleInPlace(order);
+    pos = 0;
+    answered = 0;
+    correctCount = 0;
+
+    nextQuestion();
   } catch (err) {
     statusEl.textContent = `載入失敗：${err.message}`;
   }

@@ -6,3 +6,5 @@ body { font-family: system-ui, "Noto Sans TC", sans-serif; background:#111; colo
 .choice.wrong { border-color: #e74c3c; }
 .feedback { min-height: 24px; margin: 12px 0; }
 button#nextBtn { padding: 10px 14px; border-radius: 10px; }
+.choice.correct { border-color: #2ecc71; }
+.choice.wrong { border-color: #e74c3c; }
