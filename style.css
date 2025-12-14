@@ -27,3 +27,18 @@ body{
   #status, #progress, #score, #mode{ font-size: 18px; }
   .choice{ font-size: 24px; }
 }
+
+/* 放大「答對/答錯」文字 */
+#feedback, .feedback{
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 14px;
+  line-height: 1.4;
+}
+
+/* 手機再更大 */
+@media (max-width: 480px){
+  #feedback, .feedback{
+    font-size: 26px;
+  }
+}
