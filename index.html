@@ -10,7 +10,14 @@ git push
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>英文單字測驗</title>
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link id="themeCss" rel="stylesheet" href="style.css" />
+<link id="themeCss" rel="stylesheet" href="style.css" />
+<script>
+  const css = document.getElementById("themeCss"); // 取到 <link> 節點 [web:768]
+  if (css) css.href = "style.css?v=" + Date.now(); // query string 變了就會重新載入 [web:740]
+</script>
+
+
 </head>
 
 <body>
