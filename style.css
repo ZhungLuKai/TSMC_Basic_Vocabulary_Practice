@@ -1,44 +1,135 @@
-/* 全站基礎字體放大（含狀態文字） */
-body{
-  font-size: 18px;
-  line-height: 1.65;
+:root{
+  color-scheme: light;
+  --bg:#eceff3;
+  --text:#1f2937;
+  --muted:#4b5563;
+  --card:#f7f8fa;
+  --border:#d1d5db;
+
+  --btn:#ffffff;
+  --btnHover:#f3f4f6;
+
+  --ok:#16a34a;
+  --bad:#dc2626;
+
+  --shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
-/* 題目字更大 */
-#prompt{
-  font-size: 34px;
-  font-weight: 700;
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: system-ui, "Noto Sans TC", sans-serif;
 }
 
-/* 狀態區（題庫載入、進度、模式） */
+/* 版面 */
+.card{
+  max-width: 640px;
+  margin: 16px auto;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
 #status, #progress, #score, #mode{
+  color: var(--muted);
   font-size: 16px;
+  line-height: 1.7;
 }
 
-/* 答案按鈕字更大 */
+#prompt{
+  margin: 14px 0 10px;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+/* 朗讀按鈕 */
+.speak{
+  margin: 8px auto 14px;
+  padding: 12px 14px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--btn);
+  color: var(--text);
+  cursor: pointer;
+}
+.speak:hover{ background: var(--btnHover); }
+.speak:disabled{ opacity: .6; cursor: default; }
+
+/* 選項 */
+.choices{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  justify-items: center;
+}
+
 .choice{
-  font-size: 22px;
+  width: min(560px, 100%);
+  text-align: center;
+
+  padding: 18px 16px;
+  min-height: 64px;      /* 觸控面積 */
+  font-size: 24px;       /* 答案文字放大 */
+  font-weight: 700;
+
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--btn);
+  color: var(--text);
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,.10);
+  transition: transform .06s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.choice:hover{
+  background: var(--btnHover);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+.choice:active{ transform: translateY(1px); }
+.choice:disabled{ opacity: .9; cursor: default; }
+
+/* 答對/答錯按鈕框線 */
+.choice.correct{ border-color: var(--ok); }
+.choice.wrong{ border-color: var(--bad); }
+
+/* 回饋文字（答對/答錯） */
+.feedback{
+  min-height: 34px;
+  margin-top: 14px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 /* 手機再加大一點 */
 @media (max-width: 480px){
-  body{ font-size: 20px; }
-  #prompt{ font-size: 36px; }
-  #status, #progress, #score, #mode{ font-size: 18px; }
-  .choice{ font-size: 24px; }
-}
-
-/* 放大「答對/答錯」文字 */
-#feedback, .feedback{
-  font-size: 22px;
-  font-weight: 700;
-  margin-top: 14px;
-  line-height: 1.4;
-}
-
-/* 手機再更大 */
-@media (max-width: 480px){
-  #feedback, .feedback{
-    font-size: 26px;
+  .card{
+    margin: 0;
+    min-height: 100vh;
+    border-radius: 0;
   }
+
+  #prompt{ font-size: 38px; }
+
+  #status, #progress, #score, #mode{ font-size: 18px; }
+
+  .choice{
+    font-size: 26px;
+    padding: 20px 16px;
+    min-height: 72px;
+  }
+
+  .feedback{ font-size: 28px; }
+
+  .speak{ font-size: 20px; padding: 14px 14px; }
 }
