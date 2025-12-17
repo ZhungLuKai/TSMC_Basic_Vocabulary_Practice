@@ -79,47 +79,29 @@ function updateHUD() {
   if (speakBtn) speakBtn.disabled = !current;
 }
 
+// 修改處：只保留「英翻中」邏輯
 function makeQuestion(index) {
   const item = bank[index];
-  const direction = Math.random() < 0.5 ? "EN_TO_ZH" : "ZH_TO_EN";
   const wrong = pickWrongIndices(bank.length, 3, index);
 
-  if (direction === "EN_TO_ZH") {
-    // 題目：英文；選項：中文
-    modeEl.textContent = "模式：英翻中";
-    const options = [
-      item.meaning,
-      bank[wrong[0]].meaning,
-      bank[wrong[1]].meaning,
-      bank[wrong[2]].meaning,
-    ];
-    shuffleInPlace(options);
+  // 強制設定 UI 顯示
+  modeEl.textContent = "模式：英翻中";
 
-    return {
-      prompt: item.word,
-      options,
-      correctIndex: options.indexOf(item.meaning),
-      correctText: item.meaning,
-      speakText: item.word, // 永遠朗讀英文單字
-    };
-  }
-
-  // 題目：中文；選項：英文
-  modeEl.textContent = "模式：中翻英";
+  // 選項放入中文解釋
   const options = [
-    item.word,
-    bank[wrong[0]].word,
-    bank[wrong[1]].word,
-    bank[wrong[2]].word,
+    item.meaning,
+    bank[wrong[0]].meaning,
+    bank[wrong[1]].meaning,
+    bank[wrong[2]].meaning,
   ];
   shuffleInPlace(options);
 
   return {
-    prompt: item.meaning,
-    options,
-    correctIndex: options.indexOf(item.word),
-    correctText: item.word,
-    speakText: item.word, // 永遠朗讀英文單字
+    prompt: item.word, // 題目顯示英文
+    options,           // 選項是中文
+    correctIndex: options.indexOf(item.meaning),
+    correctText: item.meaning,
+    speakText: item.word, // 朗讀英文
   };
 }
 
