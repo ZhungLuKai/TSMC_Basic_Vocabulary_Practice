@@ -133,3 +133,20 @@ html, body{
 
   .speak{ font-size: 20px; padding: 14px 14px; }
 }
+/* 錯題清單樣式 */
+.wrong-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 18px;
+}
+.wrong-item:last-child { border-bottom: none; }
+.wrong-text { flex-grow: 1; }
+.wrong-speak-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+.wrong-actions { margin-top: 10px; }

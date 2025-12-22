@@ -34,6 +34,16 @@ git push
     <button id="speakBtn" class="speak" type="button">朗讀英文</button>
 
     <div id="choices" class="choices"></div>
+    <div class="wrong-actions">
+    <button id="viewWrongBtn" class="speak" style="display:none;">查看錯題紀錄</button>
+</div>
+
+<!-- 錯題顯示區域 -->
+<div id="wrongListArea" class="card" style="display:none; text-align: left;">
+    <h3 style="margin-top:0;">錯題清單</h3>
+    <ul id="wrongList" style="list-style: none; padding: 0;"></ul>
+    <button id="closeWrongBtn" class="speak">關閉</button>
+</div>
     <div id="feedback" class="feedback"></div>
   </main>
 
