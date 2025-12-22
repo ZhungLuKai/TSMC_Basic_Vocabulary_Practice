@@ -4,49 +4,40 @@ git commit -m "update"
 git push
 -->
 
-<!doctype html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>英文單字測驗</title>
-  <link id="themeCss" rel="stylesheet" href="style.css" />
-<link id="themeCss" rel="stylesheet" href="style.css" />
-<script>
-  const css = document.getElementById("themeCss"); // 取到 <link> 節點 [web:768]
-  if (css) css.href = "style.css?v=" + Date.now(); // query string 變了就會重新載入 [web:740]
-</script>
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英文單字測驗</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <main class="card">
-    <h1>英文單字測驗</h1>
+    <div class="card">
+        <div id="status">載入題庫中...</div>
+        <div id="progress"></div>
+        <div id="score">答對：0 / 0</div>
+        <div id="mode">模式：—</div>
+        
+        <div id="prompt">---</div>
+        <button id="speakBtn" class="speak" disabled>🔊 朗讀英文</button>
+        
+        <div id="choices" class="choices"></div>
+        <div id="feedback" class="feedback"></div>
 
-    <div id="status">載入題庫中...</div>
-    <div id="progress"></div>
-    <div id="score"></div>
-    <div id="mode"></div>
+        <!-- 查看錯題按鈕 (有錯題時會顯示) -->
+        <div class="wrong-actions">
+            <button id="viewWrongBtn" class="speak" style="display:none;">查看錯題紀錄</button>
+        </div>
+    </div>
 
-    <h2 id="prompt">---</h2>
+    <!-- 錯題清單彈窗區域 -->
+    <div id="wrongListArea" class="card" style="display:none;">
+        <h3 style="margin-top:0;">錯題清單</h3>
+        <ul id="wrongList" class="wrong-list-container"></ul>
+        <button id="closeWrongBtn" class="speak">關閉</button>
+    </div>
 
-    <button id="speakBtn" class="speak" type="button">朗讀英文</button>
-
-    <div id="choices" class="choices"></div>
-    <div class="wrong-actions">
-    <button id="viewWrongBtn" class="speak" style="display:none;">查看錯題紀錄</button>
-</div>
-
-<!-- 錯題顯示區域 -->
-<div id="wrongListArea" class="card" style="display:none; text-align: left;">
-    <h3 style="margin-top:0;">錯題清單</h3>
-    <ul id="wrongList" style="list-style: none; padding: 0;"></ul>
-    <button id="closeWrongBtn" class="speak">關閉</button>
-</div>
-    <div id="feedback" class="feedback"></div>
-  </main>
-
-  <script src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
